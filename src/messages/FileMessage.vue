@@ -3,7 +3,10 @@
     <div class="sc-message--file-icon">
       <img :src="data.file.url" class="sc-image" />
     </div>
-    <div class="sc-message--file-name" :style="messageColors">
+    <div
+      class="sc-message--file-name"
+      :class="{'sc-message--file-name-no-text': !data.text}"
+      :style="messageColors">
       <a :href="data.file.url ? data.file.url : '#'" target="_blank">{{ data.file.name || '' }}</a>
     </div>
     <div v-if="data.text" class="sc-message--file-text" :style="messageColors">
@@ -73,6 +76,11 @@ export default {
   padding-top: 0;
   font-size: x-small;
   text-align: center;
+}
+
+.sc-message--file-name-no-text{
+  padding-bottom: 4px;
+  border-radius: 6px;
 }
 
 .sc-message--file-name a {
