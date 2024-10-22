@@ -10,10 +10,11 @@
       <div v-if="newMessagesCount > 0 && !isOpen" class="sc-new-messsages-count">
         {{ newMessagesCount }}
       </div>
-      <img v-if="isOpen" class="sc-closed-icon" :src="icons.close.img" :alt="icons.close.name" />
-      <img v-else class="sc-open-icon" :src="icons.open.img" :alt="icons.open.name" />
+      <img v-if="isOpen" class="sc-closed-icon" :src="icons.close.img" :alt="icons.close.name"/>
+      <img v-else class="sc-open-icon" :src="icons.open.img" :alt="icons.open.name"/>
     </div>
     <ChatWindow
+      ref="chatWindowDom"
       :message-list="messageList"
       :on-user-input-submit="onMessageWasSent"
       :participants="participants"
@@ -34,10 +35,10 @@
       @remove="$emit('remove', $event)"
     >
       <template v-slot:header>
-        <slot name="header"> </slot>
+        <slot name="header"></slot>
       </template>
       <template v-slot:user-avatar="scopedProps">
-        <slot name="user-avatar" :user="scopedProps.user" :message="scopedProps.message"> </slot>
+        <slot name="user-avatar" :user="scopedProps.user" :message="scopedProps.message"></slot>
       </template>
       <template v-slot:text-message-body="scopedProps">
         <slot
@@ -50,7 +51,7 @@
         </slot>
       </template>
       <template v-slot:system-message-body="scopedProps">
-        <slot name="system-message-body" :message="scopedProps.message"> </slot>
+        <slot name="system-message-body" :message="scopedProps.message"></slot>
       </template>
       <template v-slot:text-message-toolbox="scopedProps">
         <slot name="text-message-toolbox" :message="scopedProps.message" :me="scopedProps.me">
@@ -219,7 +220,7 @@ export default {
     }
   },
   computed: {
-    chatWindowTitle() {
+    chatWindowTitle () {
       if (this.title !== '') return this.title
 
       if (this.participants.length === 0) return 'You'
@@ -232,7 +233,7 @@ export default {
     $props: {
       deep: true,
       immediate: true,
-      handler(props) {
+      handler (props) {
         for (const prop in props) {
           store.setState(prop, props[prop])
         }
@@ -240,7 +241,13 @@ export default {
     }
   },
   methods: {
-    openAndFocus() {
+    launcherScrollDown () {
+      const chatWindowDom = this.$refs.chatWindowDom
+      if (chatWindowDom) {
+        chatWindowDom.windowScrollDown()
+      }
+    },
+    openAndFocus () {
       this.open()
       this.$root.$emit('focusUserInput')
     }

@@ -8,11 +8,12 @@
       @userList="handleUserListToggle"
     >
       <template>
-        <slot name="header"> </slot>
+        <slot name="header"></slot>
       </template>
     </Header>
-    <UserList v-if="showUserList" :colors="colors" :participants="participants" />
+    <UserList v-if="showUserList" :colors="colors" :participants="participants"/>
     <MessageList
+      ref="messageListDom"
       v-if="!showUserList"
       :messages="messages"
       :participants="participants"
@@ -24,7 +25,7 @@
       @remove="$emit('remove', $event)"
     >
       <template v-slot:user-avatar="scopedProps">
-        <slot name="user-avatar" :user="scopedProps.user" :message="scopedProps.message"> </slot>
+        <slot name="user-avatar" :user="scopedProps.user" :message="scopedProps.message"></slot>
       </template>
       <template v-slot:text-message-body="scopedProps">
         <slot
@@ -37,7 +38,7 @@
         </slot>
       </template>
       <template v-slot:system-message-body="scopedProps">
-        <slot name="system-message-body" :message="scopedProps.message"> </slot>
+        <slot name="system-message-body" :message="scopedProps.message"></slot>
       </template>
       <template v-slot:text-message-toolbox="scopedProps">
         <slot name="text-message-toolbox" :message="scopedProps.message" :me="scopedProps.me">
@@ -125,23 +126,29 @@ export default {
       required: true
     }
   },
-  data() {
+  data () {
     return {
       showUserList: false
     }
   },
   computed: {
-    messages() {
+    messages () {
       let messages = this.messageList
 
       return messages
     }
   },
   methods: {
-    handleUserListToggle(showUserList) {
+    windowScrollDown () {
+      const messageListDom = this.$refs.messageListDom
+      if (messageListDom) {
+        this.$nextTick(messageListDom._scrollDown())
+      }
+    },
+    handleUserListToggle (showUserList) {
       this.showUserList = showUserList
     },
-    getSuggestions() {
+    getSuggestions () {
       return this.messages.length > 0 ? this.messages[this.messages.length - 1].suggestions : []
     }
   }
@@ -190,6 +197,7 @@ export default {
 .sc-message--me {
   text-align: right;
 }
+
 .sc-message--them {
   text-align: left;
 }
@@ -203,9 +211,11 @@ export default {
     bottom: 0px;
     border-radius: 0px;
   }
+
   .sc-chat-window {
     transition: 0.1s ease-in-out;
   }
+
   .sc-chat-window.closed {
     bottom: 0px;
   }
