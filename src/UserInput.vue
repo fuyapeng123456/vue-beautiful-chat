@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="sc-user-input-box" :class="{'sc-user-input-box-active': inputActive && isAppleMobileDevice}">
     <Suggestions :suggestions="suggestions" :colors="colors" @sendSuggestion="_submitSuggestion" />
     <div
       v-if="file"
@@ -153,6 +153,16 @@ export default {
     },
     isEditing() {
       return store.state.editMessage && store.state.editMessage.id
+    },
+    // 是否是苹果移动设备
+    isAppleMobileDevice() {
+      const userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+      // 检查是否是苹果移动设备
+      const isAppleDevice = /iPhone|iPad|iPod/.test(userAgent);
+      const isMobile = !window.MSStream; // 排除 Windows Phone
+
+      return isAppleDevice && isMobile;
     }
   },
   watch: {
@@ -286,6 +296,24 @@ export default {
 </script>
 
 <style scoped>
+.sc-user-input-box{
+  /*position: fixed;*/
+  /*bottom: 0;*/
+  /*left: 0;*/
+  /*right: 0;*/
+  /*width: 100%;*/
+}
+
+.sc-user-input-box-active{
+  position: fixed;
+  /*bottom: 0;*/
+  left: 0;
+  right: 0;
+  width: 100%;
+  bottom: 70px;
+  border-radius: 10px;
+}
+
 .sc-user-input {
   min-height: 55px;
   margin: 0px;

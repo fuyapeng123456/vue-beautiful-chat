@@ -210,6 +210,10 @@ export default {
     right: 0px;
     bottom: 0px;
     border-radius: 0px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    overflow: hidden;
   }
 
   .sc-chat-window {
